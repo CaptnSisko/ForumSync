@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.sisko.forumsync.AccountCreator;
 import me.sisko.forumsync.Main;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -17,7 +18,7 @@ public class RegisterCommand extends Command {
 		super("register");
 	}
 
-	public void execute(net.md_5.bungee.api.CommandSender sender, String[] args) {
+	public void execute(CommandSender sender, String[] args) {
 		if ((sender instanceof ProxiedPlayer)) {
 			ProxiedPlayer p = (ProxiedPlayer) sender;
 			if (args.length == 2) {

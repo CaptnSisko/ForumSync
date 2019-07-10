@@ -1,6 +1,8 @@
 package me.sisko.sql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import me.sisko.forumsync.Main;
@@ -22,7 +24,7 @@ public class AsyncForumSync implements Runnable {
 	public void run() {
 		try {
 			Statement sta = conn.createStatement();
-			java.sql.ResultSet r = sta.executeQuery("SELECT * FROM `phpbb_users` WHERE `username`='" + name + "';");
+			ResultSet r = sta.executeQuery("SELECT * FROM `phpbb_users` WHERE `username`='" + name + "';");
 			if (r.next()) {
 				String id = r.getString("user_id");
 				if ((group.equals("Guest")) || (group.equals("default"))) {
@@ -53,7 +55,7 @@ public class AsyncForumSync implements Runnable {
 			} else if (verbose) {
 				Main.getPlugin().getLogger().info("Could not find forum account for " + name);
 			}
-		} catch (java.sql.SQLException e) {
+		} catch (SQLException e) {
 			Main.getPlugin().getLogger().warning("Error syncing account for " + name + "!");
 			e.printStackTrace();
 		}
@@ -109,6 +111,5 @@ public class AsyncForumSync implements Runnable {
 		if (group.equalsIgnoreCase("owner"))
 			return 2;
 		return -1;
-
 	}
 }

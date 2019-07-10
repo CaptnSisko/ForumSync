@@ -16,6 +16,7 @@ public class PasswordCommand extends Command {
 
 	private static ArrayList<PasswordCreator> passwords = new ArrayList<PasswordCreator>();
 
+	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if ((sender instanceof ProxiedPlayer)) {
 			ProxiedPlayer p = (ProxiedPlayer) sender;
@@ -31,12 +32,12 @@ public class PasswordCommand extends Command {
 				if (args[0].equals("confirm")) {
 					boolean foundName = false;
 					for (int i = 0; i < passwords.size(); i++) {
-						if (((PasswordCreator) passwords.get(i)).getName().equals(p.getName())) {
+						if (passwords.get(i).getName().equals(p.getName())) {
 							foundName = true;
-							if (((PasswordCreator) passwords.get(i)).getPass().equals(args[1])) {
+							if (passwords.get(i).getPass().equals(args[1])) {
 								Main.getPlugin().getProxy().getScheduler().runAsync(Main.getPlugin(),
 										new me.sisko.sql.AsyncChangePassword(p,
-												((PasswordCreator) passwords.get(i)).getPass(), Main.getConnection(),
+												passwords.get(i).getPass(), Main.getConnection(),
 												Main.getConfig().getVerbose()));
 								passwords.remove(i);
 								return;

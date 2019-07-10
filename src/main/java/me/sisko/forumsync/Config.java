@@ -1,11 +1,13 @@
 package me.sisko.forumsync;
 
+import java.io.File;
+
 import net.cubespace.Yamler.Config.YamlConfig;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Config extends YamlConfig {
 	public Config(Plugin p) {
-		CONFIG_FILE = new java.io.File(p.getDataFolder(), "config.yml");
+		CONFIG_FILE = new File(p.getDataFolder(), "config.yml");
 		CONFIG_HEADER = new String[] { "Forumsync Configuration" };
 	}
 

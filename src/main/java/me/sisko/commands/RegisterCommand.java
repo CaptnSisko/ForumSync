@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import me.sisko.forumsync.AccountCreator;
 import me.sisko.forumsync.Main;
+import me.sisko.sql.AsyncCreateAccount;
+import me.sisko.sql.AsyncForumSync;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -18,6 +20,7 @@ public class RegisterCommand extends Command {
 		super("register");
 	}
 
+	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if ((sender instanceof ProxiedPlayer)) {
 			ProxiedPlayer p = (ProxiedPlayer) sender;
@@ -35,17 +38,17 @@ public class RegisterCommand extends Command {
 				} else if (args[0].equals("confirm")) {
 					boolean nameFound = false;
 					for (int i = 0; i < accounts.size(); i++) {
-						if (((AccountCreator) accounts.get(i)).getName().equals(p.getName())) {
+						if (accounts.get(i).getName().equals(p.getName())) {
 							nameFound = true;
-							if (((AccountCreator) accounts.get(i)).getPass().equals(args[1])) {
+							if (accounts.get(i).getPass().equals(args[1])) {
 								Main.getPlugin().getProxy().getScheduler().runAsync(Main.getPlugin(),
-										new me.sisko.sql.AsyncCreateAccount(p.getAddress().getHostString(), p,
-												((AccountCreator) accounts.get(i)).getEmail(),
-												((AccountCreator) accounts.get(i)).getPass(), Main.getConnection(),
+										new AsyncCreateAccount(p.getAddress().getHostString(), p,
+												accounts.get(i).getEmail(),
+												accounts.get(i).getPass(), Main.getConnection(),
 												Main.getConfig().getVerbose()));
 								Main.getPlugin().getLogger().info("Creating an account for " + p.getName());
 								Main.getPlugin().getProxy().getScheduler().runAsync(Main.getPlugin(),
-										new me.sisko.sql.AsyncForumSync(p.getName(), Main.getPrimaryGroup(p),
+										new AsyncForumSync(p.getName(), Main.getPrimaryGroup(p),
 												Main.getConnection(), Main.getConfig().getVerbose()));
 								if ((Main.getPrimaryGroup(p).equals("Guest"))
 										|| (Main.getPrimaryGroup(p).equals("default"))) {

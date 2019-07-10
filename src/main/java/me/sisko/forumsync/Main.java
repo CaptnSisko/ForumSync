@@ -5,11 +5,16 @@ import com.github.gustav9797.PowerfulPermsAPI.PowerfulPermsPlugin;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
+
 import me.sisko.commands.RegisterCommand;
+import me.sisko.sql.AsyncForumSync;
+import me.sisko.sql.AsyncKeepAlive;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
 
 public class Main extends Plugin implements Listener {
 	private static Connection connection;
@@ -42,16 +47,14 @@ public class Main extends Plugin implements Listener {
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
-
-			getProxy().getScheduler().schedule(this, new me.sisko.sql.AsyncKeepAlive(connection), 1L,
-					java.util.concurrent.TimeUnit.HOURS);
 		}
+		getProxy().getScheduler().schedule(this, new AsyncKeepAlive(connection), 5l, TimeUnit.MINUTES);
 	}
 
-	@net.md_5.bungee.event.EventHandler
+	@EventHandler
 	public void onJoin(PostLoginEvent e) {
 		ProxiedPlayer p = e.getPlayer();
-		getProxy().getScheduler().runAsync(this, new me.sisko.sql.AsyncForumSync(p.getName(),
+		getProxy().getScheduler().runAsync(this, new AsyncForumSync(p.getName(),
 				perms.getPermissionPlayer(p.getUniqueId()).getPrimaryGroup().getName(), connection, true));
 	}
 

@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
+import me.sisko.commands.PasswordCommand;
 import me.sisko.commands.RegisterCommand;
 import me.sisko.sql.AsyncForumSync;
 import me.sisko.sql.AsyncKeepAlive;
@@ -26,8 +27,7 @@ public class Main extends Plugin implements Listener {
 		getProxy().getPluginManager().registerListener(this, this);
 		perms = ((PowerfulPermsPlugin) getProxy().getPluginManager().getPlugin("PowerfulPerms")).getPermissionManager();
 		getProxy().getPluginManager().registerCommand(this, new RegisterCommand());
-		getProxy().getPluginManager().registerCommand(this, new me.sisko.commands.PasswordCommand());
-
+		getProxy().getPluginManager().registerCommand(this, new PasswordCommand());
 		dbConfig = null;
 		plug = this;
 		try {

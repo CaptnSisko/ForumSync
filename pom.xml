@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.captnsisko</groupId>
-    <artifactId>forumsync</artifactId>
-    <version>1.0</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.github.captnsisko</groupId>
+	<artifactId>forumsync</artifactId>
+	<version>1.0</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -30,39 +29,38 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+		<repository>
+			<id>bungeecord-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>3.1.0-m3</version>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.14-SNAPSHOT</version>
-        </dependency>
-        <dependency>
+		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-api</artifactId>
+			<version>1.14-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>me.lucko.luckperms</groupId>
+			<artifactId>luckperms-api</artifactId>
+			<version>4.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>yamler</groupId>
 			<artifactId>Yamler</artifactId>
 			<version>2.4</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/../depend/Yamler-Bungee.jar</systemPath>
-		</dependency>
-        <dependency>
-			<groupId>powerfulperms</groupId>
-			<artifactId>Powerfulperms</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../depend/PowerfulPerms.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>

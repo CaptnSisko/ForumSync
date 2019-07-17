@@ -1,12 +1,13 @@
 package me.sisko.forumsync;
 
-import com.github.gustav9797.PowerfulPermsAPI.PermissionManager;
-import com.github.gustav9797.PowerfulPermsAPI.PowerfulPermsPlugin;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.LuckPermsApi;
 import me.sisko.commands.PasswordCommand;
 import me.sisko.commands.RegisterCommand;
 import me.sisko.sql.AsyncForumSync;
@@ -20,14 +21,16 @@ import net.md_5.bungee.event.EventHandler;
 public class Main extends Plugin implements Listener {
 	private static Connection connection;
 	private static Main plug;
-	private static PermissionManager perms;
+	private static Optional<LuckPermsApi> perms;
 	private static Config dbConfig;
 
 	public void onEnable() {
 		getProxy().getPluginManager().registerListener(this, this);
-		perms = ((PowerfulPermsPlugin) getProxy().getPluginManager().getPlugin("PowerfulPerms")).getPermissionManager();
 		getProxy().getPluginManager().registerCommand(this, new RegisterCommand());
 		getProxy().getPluginManager().registerCommand(this, new PasswordCommand());
+
+		perms = LuckPerms.getApiSafe();
+
 		dbConfig = null;
 		plug = this;
 		try {
@@ -54,8 +57,7 @@ public class Main extends Plugin implements Listener {
 	@EventHandler
 	public void onJoin(PostLoginEvent e) {
 		ProxiedPlayer p = e.getPlayer();
-		getProxy().getScheduler().runAsync(this, new AsyncForumSync(p.getName(),
-				perms.getPermissionPlayer(p.getUniqueId()).getPrimaryGroup().getName(), connection, true));
+		getProxy().getScheduler().runAsync(this, new AsyncForumSync(p.getName(), getPrimaryGroup(e.getPlayer()), connection, true));
 	}
 
 	public static Connection getConnection() {
@@ -71,6 +73,6 @@ public class Main extends Plugin implements Listener {
 	}
 
 	public static String getPrimaryGroup(ProxiedPlayer p) {
-		return perms.getPermissionPlayer(p.getUniqueId()).getPrimaryGroup().getName();
+		return perms.get().getUser(p.getUniqueId()).getPrimaryGroup();
 	}
 }

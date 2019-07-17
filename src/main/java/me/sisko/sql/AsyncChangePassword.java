@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import me.sisko.forumsync.Main;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -33,12 +34,10 @@ public class AsyncChangePassword implements Runnable {
 			sta.setString(1, pass);
 			sta.setString(2, name);
 			sta.execute();
-			p.sendMessage(new TextComponent(
-					com.github.gustav9797.PowerfulPerms.common.ChatColor.GREEN + "Your password has been changed!"));
+			p.sendMessage(new TextComponent(ChatColor.GREEN + "Your password has been changed!"));
 			Main.getPlugin().getLogger().info("Changed password for " + name);
 		} catch (SQLException e) {
-			p.sendMessage(new TextComponent(com.github.gustav9797.PowerfulPerms.common.ChatColor.RED
-					+ "Error changing your password (does your account exist?)"));
+			p.sendMessage(new TextComponent(ChatColor.RED + "Error changing your password (does your account exist?)"));
 			Main.getPlugin().getLogger().warning("Error changing password for " + name + "!");
 		}
 	}

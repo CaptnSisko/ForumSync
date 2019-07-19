@@ -16,6 +16,11 @@ public class Config extends YamlConfig {
 	private String user = "root";
 	private String pass = "password";
 	private int port = 1433;
+	private String local_ip = "localhost";
+	private String local_name = "database";
+	private String local_user = "user";
+	private String local_pass = "pass";
+	private int local_port = 1433;
 	private boolean verbose = true;
 
 	public String getIp() {
@@ -36,6 +41,26 @@ public class Config extends YamlConfig {
 
 	public int getPort() {
 		return port;
+	}
+
+	public String getLocalIp() {
+		return local_ip;
+	}
+
+	public String getLocalName() {
+		return local_name;
+	}
+
+	public String getLocalUser() {
+		return local_user;
+	}
+
+	public String getLocalPass() {
+		return local_pass;
+	}
+
+	public int getLocalPort() {
+		return local_port;
 	}
 
 	public boolean getVerbose() {

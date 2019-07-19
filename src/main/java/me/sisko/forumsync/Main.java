@@ -8,6 +8,9 @@ import java.util.concurrent.TimeUnit;
 
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.LuckPermsApi;
+import me.lucko.luckperms.api.Node;
+import me.lucko.luckperms.api.User;
+import me.sisko.commands.GenerateForumTableCommand;
 import me.sisko.commands.PasswordCommand;
 import me.sisko.commands.RegisterCommand;
 import me.sisko.sql.AsyncForumSync;
@@ -20,6 +23,7 @@ import net.md_5.bungee.event.EventHandler;
 
 public class Main extends Plugin implements Listener {
 	private static Connection connection;
+	private static Connection localConnection;
 	private static Main plug;
 	private static Optional<LuckPermsApi> perms;
 	private static Config dbConfig;
@@ -28,6 +32,7 @@ public class Main extends Plugin implements Listener {
 		getProxy().getPluginManager().registerListener(this, this);
 		getProxy().getPluginManager().registerCommand(this, new RegisterCommand());
 		getProxy().getPluginManager().registerCommand(this, new PasswordCommand());
+		getProxy().getPluginManager().registerCommand(this, new GenerateForumTableCommand());
 
 		perms = LuckPerms.getApiSafe();
 
@@ -47,6 +52,10 @@ public class Main extends Plugin implements Listener {
 						"jdbc:mysql://" + dbConfig.getIp() + ":" + dbConfig.getPort() + "/" + dbConfig.getName()
 								+ "?autoReconnect=true&verifyServerCertificate=false&useSSL=true",
 						dbConfig.getUser(), dbConfig.getPass());
+				localConnection = DriverManager.getConnection(
+						"jdbc:mysql://" + dbConfig.getLocalIp() + ":" + dbConfig.getLocalPort() + "/" + dbConfig.getLocalName()
+								+ "?autoReconnect=true&verifyServerCertificate=false&useSSL=true",
+						dbConfig.getLocalUser(), dbConfig.getLocalPass());
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -57,13 +66,22 @@ public class Main extends Plugin implements Listener {
 	@EventHandler
 	public void onJoin(PostLoginEvent e) {
 		ProxiedPlayer p = e.getPlayer();
-		getProxy().getScheduler().runAsync(this, new AsyncForumSync(p.getName(), getPrimaryGroup(e.getPlayer()), connection, true));
+		getProxy().getScheduler().runAsync(this,
+				new AsyncForumSync(p, localConnection, connection, true));
 	}
 
 	public static Connection getConnection() {
 		return connection;
 	}
+	
+	public static Connection getLocalConnection() {
+		return localConnection;
+	}
 
+	public static LuckPermsApi getPerms() {
+		return perms.get();
+	}
+	
 	public static Main getPlugin() {
 		return plug;
 	}
@@ -74,5 +92,30 @@ public class Main extends Plugin implements Listener {
 
 	public static String getPrimaryGroup(ProxiedPlayer p) {
 		return perms.get().getUser(p.getUniqueId()).getPrimaryGroup();
+	}
+
+	// best to only call this async
+	public static void setGroup(ProxiedPlayer p, String group) {
+		User u = perms.get().getUser(p.getUniqueId());
+		Node n = perms.get().getNodeFactory().makeGroupNode(group).build();
+		u.setPermission(n);
+		perms.get().getUserManager().saveUser(u).join();
+		perms.get().getMessagingService().ifPresent(service -> service.pushUserUpdate(u));
+	}
+
+	// best to only call async
+	public static boolean isUser(ProxiedPlayer p) {
+		User u = perms.get().getUser(p.getUniqueId());
+		Node n = perms.get().getNodeFactory().makeGroupNode("user").build();
+		return u.hasPermission(n).asBoolean();
+	}
+
+	// best to only call async
+	public static void removeUser(ProxiedPlayer p) {
+		User u = perms.get().getUser(p.getUniqueId());
+		Node n = perms.get().getNodeFactory().makeGroupNode("user").build();
+		u.unsetPermission(n);
+		perms.get().getUserManager().saveUser(u).join();
+		perms.get().getMessagingService().ifPresent(service -> service.pushUserUpdate(u));
 	}
 }

@@ -11,7 +11,6 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import redis.clients.jedis.Jedis;
 
 public class RegisterCommand extends Command {
 	private static ArrayList<AccountCreator> accounts = new ArrayList<AccountCreator>();
@@ -48,14 +47,8 @@ public class RegisterCommand extends Command {
 												Main.getConfig().getVerbose()));
 								Main.getPlugin().getLogger().info("Creating an account for " + p.getName());
 								Main.getPlugin().getProxy().getScheduler().runAsync(Main.getPlugin(),
-										new AsyncForumSync(p.getName(), Main.getPrimaryGroup(p),
+										new AsyncForumSync(p, Main.getLocalConnection(),
 												Main.getConnection(), Main.getConfig().getVerbose()));
-								if ((Main.getPrimaryGroup(p).equals("Guest"))
-										|| (Main.getPrimaryGroup(p).equals("default"))) {
-									Jedis j = new Jedis();
-									j.publish("minecraft.console.hub.in", "pp user " + p.getName() + " setrank user");
-									j.close();
-								}
 								accounts.remove(i);
 								return;
 							}

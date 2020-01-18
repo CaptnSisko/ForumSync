@@ -7,17 +7,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.lucko.luckperms.api.LuckPermsApi;
-import me.lucko.luckperms.api.User;
 import me.sisko.forumsync.Main;
 import me.sisko.util.UUIDFetcher;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
 
 public class AsyncGenerateTable implements Runnable {
 	private Connection local;
 	private Connection web;
-	private LuckPermsApi perms;
+	private LuckPerms perms;
 
-	public AsyncGenerateTable(Connection local, Connection web, LuckPermsApi perms) {
+	public AsyncGenerateTable(Connection local, Connection web, LuckPerms perms) {
 		this.local = local;
 		this.web = web;
 		this.perms = perms;
@@ -53,7 +53,7 @@ public class AsyncGenerateTable implements Runnable {
 			ArrayList<String> skipNames = new ArrayList<String>();
 			for (String name : users.values()) {
 				String uuid = "";
-				User u = perms.getUser(name);
+				User u = perms.getUserManager().getUser(name);
 				if (u == null) {
 					Main.getPlugin().getLogger().info("Doing manual lookup for user " + name);
 					uuid = UUIDFetcher.getUUID(name);
@@ -64,7 +64,7 @@ public class AsyncGenerateTable implements Runnable {
 								.toString();
 					}
 				} else {
-					uuid = u.getUuid().toString();
+					uuid = u.getUniqueId().toString();
 				}
 				uuids.put(name, uuid);
 			}

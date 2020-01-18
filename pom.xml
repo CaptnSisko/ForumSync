@@ -47,12 +47,12 @@
 		<dependency>
 			<groupId>net.md-5</groupId>
 			<artifactId>bungeecord-api</artifactId>
-			<version>1.14-SNAPSHOT</version>
+			<version>1.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>me.lucko.luckperms</groupId>
-			<artifactId>luckperms-api</artifactId>
-			<version>4.4</version>
+			<groupId>net.luckperms</groupId>
+			<artifactId>api</artifactId>
+			<version>5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

@@ -98,7 +98,7 @@ public class Main extends Plugin implements Listener {
 	public static void setGroup(ProxiedPlayer p, String group) {
 		User u = perms.getUserManager().getUser(p.getUniqueId());
 		Node n = Node.builder("group." + group).build();
-		u.getNodes().add(n);
+		u.data().add(n);
 		perms.getUserManager().saveUser(u).join();
 		perms.getMessagingService().ifPresent(service -> service.pushUserUpdate(u));
 	}
@@ -114,7 +114,7 @@ public class Main extends Plugin implements Listener {
 	public static void removeUser(ProxiedPlayer p) {
 		User u = perms.getUserManager().getUser(p.getUniqueId());
 		Node n = Node.builder("group.user").build();
-		u.getNodes().remove(n);
+		u.data().remove(n);
 		perms.getUserManager().saveUser(u).join();
 		perms.getMessagingService().ifPresent(service -> service.pushUserUpdate(u));
 	}
